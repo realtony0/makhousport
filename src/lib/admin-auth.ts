@@ -6,7 +6,7 @@ const COOKIE_NAME = "makhou_admin";
 const SESSION_VALUE = "active";
 
 export function getAdminPasscode(): string {
-  return process.env.ADMIN_PASSCODE || "makhouadmin123";
+  return process.env.ADMIN_PASSCODE || "150803";
 }
 
 export async function isAdminAuthenticated(): Promise<boolean> {
@@ -28,4 +28,3 @@ export async function clearAdminSession(): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.delete(COOKIE_NAME);
 }
-

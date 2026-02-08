@@ -34,7 +34,7 @@ Important:
 
 Connexion admin par code:
 - variable: `ADMIN_PASSCODE`
-- valeur par defaut: `makhouadmin123`
+- valeur par defaut: `150803`
 
 Exemple:
 

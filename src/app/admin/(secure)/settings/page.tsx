@@ -14,7 +14,7 @@ export default function AdminSettingsPage() {
   const storageBucket = process.env.SUPABASE_STORAGE_BUCKET || "products";
   const hasStorageBucket = Boolean(storageBucket);
   const hasCustomPasscode = Boolean(
-    process.env.ADMIN_PASSCODE && process.env.ADMIN_PASSCODE !== "makhouadmin123"
+    process.env.ADMIN_PASSCODE && process.env.ADMIN_PASSCODE !== "150803"
   );
   const onVercel = Boolean(process.env.VERCEL);
   const vercelUrl = process.env.VERCEL_URL || null;
