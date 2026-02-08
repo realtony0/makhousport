@@ -137,35 +137,66 @@ async function ensureInitialCatalogSeed(supabase: SupabaseClient): Promise<void>
   }
 
   initialSeedPromise = (async () => {
-    const { count: categoryCount, error: categoryCountError } = await supabase
+    const { data: categoryRowsRaw, error: categoryRowsError } = await supabase
       .from("categories")
-      .select("id", { count: "exact", head: true });
-    throwIfSupabaseError(categoryCountError, "Impossible de verifier les categories");
+      .select("id,slug");
+    throwIfSupabaseError(categoryRowsError, "Impossible de verifier les categories");
+
+    let categoryRows = (categoryRowsRaw as Array<Pick<CategoryRow, "id" | "slug">> | null) ?? [];
 
     const { count: productCount, error: productCountError } = await supabase
       .from("products")
       .select("id", { count: "exact", head: true });
     throwIfSupabaseError(productCountError, "Impossible de verifier les produits");
 
-    if ((categoryCount || 0) > 0 || (productCount || 0) > 0) {
-      hasCheckedInitialSeed = true;
-      return;
-    }
-
     const seedCategories = getSeedCategories();
     const seedProducts = getSeedProducts();
 
-    if (seedCategories.length > 0) {
+    const missingSeedCategories = seedCategories.filter(
+      (seed) =>
+        !categoryRows.some((existing) => existing.id === seed.id || existing.slug === seed.slug)
+    );
+
+    if (missingSeedCategories.length > 0) {
       const { error: seedCategoriesError } = await supabase
         .from("categories")
-        .upsert(seedCategories.map(toCategoryRow), { onConflict: "id" });
+        .upsert(missingSeedCategories.map(toCategoryRow), { onConflict: "id" });
       throwIfSupabaseError(seedCategoriesError, "Impossible d'initialiser les categories");
+
+      const { data: categoriesAfterSeed, error: categoriesAfterSeedError } = await supabase
+        .from("categories")
+        .select("id,slug");
+      throwIfSupabaseError(categoriesAfterSeedError, "Impossible de recharger les categories");
+      categoryRows = (categoriesAfterSeed as Array<Pick<CategoryRow, "id" | "slug">> | null) ?? [];
     }
 
-    if (seedProducts.length > 0) {
+    if ((productCount || 0) === 0 && seedProducts.length > 0) {
+      const resolvedCategoryIdBySeedId = new Map<string, string>();
+      for (const seedCategory of seedCategories) {
+        const byId = categoryRows.find((existing) => existing.id === seedCategory.id);
+        if (byId) {
+          resolvedCategoryIdBySeedId.set(seedCategory.id, byId.id);
+          continue;
+        }
+
+        const bySlug = categoryRows.find((existing) => existing.slug === seedCategory.slug);
+        if (bySlug) {
+          resolvedCategoryIdBySeedId.set(seedCategory.id, bySlug.id);
+        }
+      }
+
+      const resolvedProducts: Product[] = [];
+      for (const seedProduct of seedProducts) {
+        const resolvedCategoryId = resolvedCategoryIdBySeedId.get(seedProduct.categoryId);
+        if (!resolvedCategoryId) {
+          continue;
+        }
+        resolvedProducts.push({ ...seedProduct, categoryId: resolvedCategoryId });
+      }
+
       const { error: seedProductsError } = await supabase
         .from("products")
-        .upsert(seedProducts.map(toProductRow), { onConflict: "id" });
+        .upsert(resolvedProducts.map(toProductRow), { onConflict: "id" });
       throwIfSupabaseError(seedProductsError, "Impossible d'initialiser les produits");
     }
 
