@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { formatXof } from "@/lib/currency";
 import { getOrderById } from "@/lib/data-store";
+import { buildOrderChatUrl } from "@/lib/order-chat";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -24,11 +25,12 @@ export default async function OrderSuccessPage({ params }: Props) {
   if (!order) {
     notFound();
   }
+  const chatUrl = buildOrderChatUrl(order);
 
   return (
     <div className="space-y-6">
       <section className="ms-card p-6 md:p-8">
-        <p className="ms-kicker">Commande confirmee</p>
+        <p className="ms-kicker">Commande enregistree</p>
         <h1 className="mt-2 font-display text-4xl font-black text-slate-950">Merci {order.customerName}</h1>
         <p className="mt-3 text-sm font-semibold text-slate-700">
           Reference: <span className="font-black text-slate-950">{order.id}</span>
@@ -36,9 +38,23 @@ export default async function OrderSuccessPage({ params }: Props) {
         <p className="mt-1 text-sm font-semibold text-slate-700">
           Paiement: {paymentLabel(order.paymentMethod)} | Total: {formatXof(order.totalXof)}
         </p>
+        {chatUrl ? (
+          <p className="mt-2 text-sm font-semibold text-slate-700">
+            Etape suivante: envoyer cette commande sur WhatsApp.
+          </p>
+        ) : (
+          <p className="mt-2 text-sm font-semibold text-rose-700">
+            Numero WhatsApp non configure. Contactez l administrateur.
+          </p>
+        )}
 
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/boutique" className="ms-btn-accent">
+          {chatUrl ? (
+            <Link href={chatUrl} className="ms-btn-accent" target="_blank" rel="noreferrer">
+              Envoyer sur WhatsApp
+            </Link>
+          ) : null}
+          <Link href="/boutique" className="ms-btn-secondary">
             Retour boutique
           </Link>
           <Link href="/" className="ms-btn-secondary">

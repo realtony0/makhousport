@@ -14,6 +14,7 @@ export default function AdminSettingsPage() {
   const supabaseUrlReady = Boolean(supabaseUrl);
   const supabaseKeyReady = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
   const hasAdminPasscode = Boolean(process.env.ADMIN_PASSCODE);
+  const hasWhatsAppOrderNumber = Boolean(process.env.WHATSAPP_ORDER_NUMBER);
   const storageBucket = process.env.SUPABASE_STORAGE_BUCKET || "products";
   const hasStorageBucket = Boolean(storageBucket);
   const hasCustomPasscode = Boolean(
@@ -81,6 +82,13 @@ export default function AdminSettingsPage() {
                 {hasStorageBucket ? `OK (${storageBucket})` : "Manquant"}
               </span>
             </div>
+
+            <div className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
+              <span className="text-sm font-bold text-ink-900">WHATSAPP_ORDER_NUMBER</span>
+              <span className={statusBadge(hasWhatsAppOrderNumber)}>
+                {hasWhatsAppOrderNumber ? "OK" : "Manquant"}
+              </span>
+            </div>
           </div>
         </article>
       </section>
@@ -89,13 +97,14 @@ export default function AdminSettingsPage() {
         <h2 className="font-display text-2xl font-black text-ink-950">Checklist Vercel</h2>
         <div className="mt-4 space-y-2 text-sm font-semibold text-ink-800">
           <p className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
-            1. Ajoute les 3 variables dans Vercel Project Settings {">"} Environment Variables.
+            1. Ajoute les 5 variables dans Vercel Project Settings {">"} Environment Variables.
           </p>
           <p className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
-            2. Execute le script SQL dans le projet Supabase: <code>supabase/schema.sql</code>.
+            2. Execute les scripts SQL dans Supabase: <code>supabase/schema.sql</code> et{" "}
+            <code>supabase/storage.sql</code>.
           </p>
           <p className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
-            3. Redeploie l application pour appliquer la configuration.
+            3. Redeploie l application pour appliquer la configuration et valider le checkout.
           </p>
           {vercelUrl ? (
             <p className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">

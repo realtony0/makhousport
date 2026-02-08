@@ -39,7 +39,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
           <div>
             <p className="ms-kicker">Validation commande</p>
             <h1 className="mt-2 font-display text-4xl font-black text-slate-950 md:text-5xl">Passer commande</h1>
-            <p className="mt-2 text-sm font-semibold text-slate-700">Renseignez vos informations de livraison.</p>
+            <p className="mt-2 text-sm font-semibold text-slate-700">Renseignez vos informations puis validez.</p>
           </div>
           <Link href="/panier" className="ms-btn-secondary">
             Retour panier
@@ -130,7 +130,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
           </div>
 
           <div className="mt-4 rounded-2xl bg-white p-3 text-xs font-bold text-slate-700">
-            Un agent vous contacte pour confirmer la livraison et le paiement.
+            Apres validation, un message WhatsApp s ouvre avec le recapitulatif de commande.
           </div>
         </aside>
       </div>

@@ -20,10 +20,10 @@ export default async function SecureAdminLayout({ children }: { children: React.
       <section className="ms-card-dark p-5 md:p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="ms-kicker text-sky-200">Espace securise</p>
-            <h1 className="mt-1 font-display text-3xl font-black text-white">Admin Makhou Sport</h1>
+            <p className="ms-kicker text-sky-200">Administration</p>
+            <h1 className="mt-1 font-display text-3xl font-black text-white">Makhou Sport</h1>
             <p className="mt-2 text-sm font-semibold text-white/80">
-              Catalogue, commandes et configuration de la boutique.
+              Gestion du catalogue, des commandes et des parametres.
             </p>
           </div>
 

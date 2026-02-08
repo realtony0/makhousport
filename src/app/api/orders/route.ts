@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { createOrder } from "@/lib/data-store";
+import { buildOrderChatUrl } from "@/lib/order-chat";
 import type { CheckoutInput, PaymentMethod } from "@/lib/types";
 
 const allowedPayments = new Set<PaymentMethod>(["cash", "orange-money", "wave"]);
@@ -39,10 +40,15 @@ export async function POST(request: Request) {
       paymentMethod: data.paymentMethod,
       lines: data.lines
     });
-    return NextResponse.json({ orderId: order.id }, { status: 201 });
+    return NextResponse.json(
+      {
+        orderId: order.id,
+        chatUrl: buildOrderChatUrl(order)
+      },
+      { status: 201 }
+    );
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erreur de commande";
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }
-

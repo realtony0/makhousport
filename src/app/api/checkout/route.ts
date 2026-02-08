@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { getCartLines } from "@/lib/cart";
 import { createOrder } from "@/lib/data-store";
+import { buildOrderChatUrl } from "@/lib/order-chat";
 import type { CheckoutInput, PaymentMethod } from "@/lib/types";
 
 const CART_COOKIE = "ms_cart";
@@ -20,13 +21,13 @@ const schema = z.object({
 function redirectWithError(request: Request, error: string) {
   const url = new URL("/commande", request.url);
   url.searchParams.set("error", error);
-  return NextResponse.redirect(url);
+  return NextResponse.redirect(url, 303);
 }
 
 export async function POST(request: Request) {
   const { lines } = await getCartLines();
   if (lines.length === 0) {
-    return NextResponse.redirect(new URL("/panier", request.url));
+    return NextResponse.redirect(new URL("/panier", request.url), 303);
   }
 
   const formData = await request.formData();
@@ -57,7 +58,9 @@ export async function POST(request: Request) {
 
   try {
     const created = await createOrder(payload);
-    const response = NextResponse.redirect(new URL(`/commande/${created.id}`, request.url));
+    const chatUrl = buildOrderChatUrl(created);
+    const destination = chatUrl || new URL(`/commande/${created.id}`, request.url).toString();
+    const response = NextResponse.redirect(destination, 303);
     response.cookies.set(CART_COOKIE, "{}", {
       httpOnly: true,
       sameSite: "lax",

@@ -25,10 +25,10 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       <section className="ms-card p-6 md:p-8">
-        <p className="ms-kicker">Espace administration</p>
-        <h1 className="mt-2 font-display text-4xl font-black text-ink-950">Dashboard admin</h1>
+        <p className="ms-kicker">Tableau de bord</p>
+        <h1 className="mt-2 font-display text-4xl font-black text-ink-950">Administration</h1>
         <p className="mt-2 text-sm font-semibold text-ink-700">
-          Suivi de la boutique, des produits et des commandes en temps reel.
+          Suivi des produits, commandes et ventes.
         </p>
       </section>
 
@@ -61,8 +61,8 @@ export default async function AdminDashboardPage() {
 
       <section className="grid gap-4 lg:grid-cols-2">
         <article className="ms-card p-5 md:p-6">
-          <p className="ms-kicker">Acces rapide</p>
-          <h2 className="mt-1 font-display text-3xl font-black text-ink-950">Actions admin</h2>
+          <p className="ms-kicker">Raccourcis</p>
+          <h2 className="mt-1 font-display text-3xl font-black text-ink-950">Operations</h2>
           <div className="mt-4 flex flex-wrap gap-2">
             <Link href="/admin/categories" className="ms-btn-secondary">
               Gerer les categories
@@ -80,7 +80,7 @@ export default async function AdminDashboardPage() {
         </article>
 
         <article className="ms-card p-5 md:p-6">
-          <p className="ms-kicker">Etat technique</p>
+          <p className="ms-kicker">Etat systeme</p>
           <h2 className="mt-1 font-display text-3xl font-black text-ink-950">Configuration</h2>
           <div className="mt-4 space-y-2">
             <p className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-ink-800">

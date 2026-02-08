@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 export function SiteFooter() {
+  const orderContact = process.env.WHATSAPP_ORDER_NUMBER || null;
+
   return (
     <footer className="mt-14 border-t border-slate-200 bg-white/90">
       <div className="ms-container grid gap-8 py-10 md:grid-cols-4">
@@ -13,7 +15,7 @@ export function SiteFooter() {
             <p className="text-sm font-black uppercase tracking-[0.12em] text-slate-700">Makhou Sport</p>
           </div>
           <p className="text-sm font-semibold leading-relaxed text-slate-700">
-            Boutique de sport en ligne basee au Senegal. Commande simple et livraison rapide.
+            Boutique de sport en ligne basee a Dakar.
           </p>
         </div>
 
@@ -45,7 +47,7 @@ export function SiteFooter() {
           <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">Contact</p>
           <div className="mt-3 space-y-2 text-sm font-semibold text-slate-700">
             <p>Dakar, Senegal</p>
-            <p>Support client rapide</p>
+            <p>{orderContact ? `Commandes WhatsApp: ${orderContact}` : "Commandes via WhatsApp"}</p>
             <p>Livraison 24h-72h</p>
           </div>
         </div>

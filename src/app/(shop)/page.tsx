@@ -28,12 +28,12 @@ export default async function HomePage() {
           <div className="absolute -bottom-16 left-10 h-44 w-44 rounded-full bg-cyan-300/20 blur-3xl" />
 
           <div className="relative">
-            <p className="ms-kicker text-orange-300">Boutique en ligne - Senegal</p>
+            <p className="ms-kicker text-orange-300">Makhou Sport - Dakar</p>
             <h1 className="mt-3 max-w-2xl font-display text-4xl font-black uppercase leading-[0.95] text-white md:text-6xl">
-              Articles de sport pour vos entrainements.
+              Equipement sportif disponible en stock.
             </h1>
             <p className="mt-5 max-w-xl text-sm font-semibold leading-relaxed text-white/80 md:text-base">
-              Chaussettes, maintien articulaire et compression. Produits disponibles en stock.
+              Chaussettes, maintien articulaire et compression pour match et entrainement.
             </p>
 
             <div className="mt-7 flex flex-wrap gap-3">
@@ -46,9 +46,9 @@ export default async function HomePage() {
             </div>
 
             <div className="mt-7 flex flex-wrap gap-2">
-              <span className="ms-chip border-white/20 bg-white/10 text-white">{activeCount} produits actifs</span>
-              <span className="ms-chip border-white/20 bg-white/10 text-white">Livraison rapide</span>
-              <span className="ms-chip border-white/20 bg-white/10 text-white">Orange Money, Wave ou livraison</span>
+              <span className="ms-chip border-white/20 bg-white/10 text-white">{activeCount} produits</span>
+              <span className="ms-chip border-white/20 bg-white/10 text-white">Paiement a la livraison</span>
+              <span className="ms-chip border-white/20 bg-white/10 text-white">Orange Money et Wave</span>
             </div>
           </div>
         </article>
@@ -65,7 +65,7 @@ export default async function HomePage() {
                 priority
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/80 via-slate-900/20 to-transparent p-5 text-white">
-                <p className="text-[11px] font-black uppercase tracking-[0.14em] text-orange-300">Produit en avant</p>
+                <p className="text-[11px] font-black uppercase tracking-[0.14em] text-orange-300">Produit recommande</p>
                 <p className="mt-1 font-display text-2xl font-black leading-tight">{heroProduct.name}</p>
                 <Link href={`/boutique/${heroProduct.slug}`} className="mt-3 inline-flex text-sm font-black uppercase tracking-[0.12em] text-white/90 hover:text-white">
                   Voir le produit
@@ -83,7 +83,7 @@ export default async function HomePage() {
       <section className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="ms-kicker">Categories</p>
+            <p className="ms-kicker">Rayons</p>
             <h2 className="mt-1 font-display text-3xl font-black text-slate-950">Par categorie</h2>
           </div>
           <Link href="/boutique" className="ms-btn-secondary">

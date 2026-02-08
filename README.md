@@ -54,6 +54,7 @@ Toutes les donnees passent par Supabase (categories, produits, commandes).
    - `NEXT_PUBLIC_SUPABASE_URL` (deja pre-remplie avec ton projet)
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `SUPABASE_STORAGE_BUCKET` (optionnel, defaut: `products`)
+   - `WHATSAPP_ORDER_NUMBER` (numero destination des commandes, ex: `221770000000`)
 5. Redemarrer le serveur Next.js.
 
 Sans ces variables, le backend et l upload images ne fonctionnent pas.
@@ -62,6 +63,12 @@ Sans ces variables, le backend et l upload images ne fonctionnent pas.
 
 - Dans `/admin/products`, l admin televerse directement les images (plus besoin d URL manuelle).
 - Les images sont enregistrees dans Supabase Storage (bucket `products`).
+
+## Commandes WhatsApp
+
+- Le client prepare son panier puis valide le formulaire de commande.
+- La commande est enregistree en base, puis redirigee vers WhatsApp avec un message pre-rempli.
+- Le numero destination est `WHATSAPP_ORDER_NUMBER`.
 
 ## Photos produits
 
