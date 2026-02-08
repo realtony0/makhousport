@@ -44,6 +44,7 @@ ADMIN_PASSCODE=moncode npm run dev
 ## Donnees
 
 Toutes les donnees passent par Supabase (categories, produits, commandes).
+Si la base est vide au premier lancement, le catalogue initial est injecte automatiquement depuis `data/*.json`.
 
 ## Configuration Supabase (simple)
 

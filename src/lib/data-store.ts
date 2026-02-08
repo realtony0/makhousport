@@ -3,6 +3,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { getSeedCategories, getSeedProducts } from "@/lib/seed-catalog";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type {
   Category,
@@ -61,6 +62,9 @@ type OrderRow = {
 function getSupabaseClient(): SupabaseClient {
   return createSupabaseServerClient();
 }
+
+let hasCheckedInitialSeed = false;
+let initialSeedPromise: Promise<void> | null = null;
 
 function throwIfSupabaseError(
   error: { message?: string; details?: string } | null,
@@ -123,6 +127,56 @@ function toProductRow(product: Product): ProductRow {
   };
 }
 
+async function ensureInitialCatalogSeed(supabase: SupabaseClient): Promise<void> {
+  if (hasCheckedInitialSeed) {
+    return;
+  }
+  if (initialSeedPromise) {
+    await initialSeedPromise;
+    return;
+  }
+
+  initialSeedPromise = (async () => {
+    const { count: categoryCount, error: categoryCountError } = await supabase
+      .from("categories")
+      .select("id", { count: "exact", head: true });
+    throwIfSupabaseError(categoryCountError, "Impossible de verifier les categories");
+
+    const { count: productCount, error: productCountError } = await supabase
+      .from("products")
+      .select("id", { count: "exact", head: true });
+    throwIfSupabaseError(productCountError, "Impossible de verifier les produits");
+
+    if ((categoryCount || 0) > 0 || (productCount || 0) > 0) {
+      hasCheckedInitialSeed = true;
+      return;
+    }
+
+    const seedCategories = getSeedCategories();
+    const seedProducts = getSeedProducts();
+
+    if (seedCategories.length > 0) {
+      const { error: seedCategoriesError } = await supabase
+        .from("categories")
+        .upsert(seedCategories.map(toCategoryRow), { onConflict: "id" });
+      throwIfSupabaseError(seedCategoriesError, "Impossible d'initialiser les categories");
+    }
+
+    if (seedProducts.length > 0) {
+      const { error: seedProductsError } = await supabase
+        .from("products")
+        .upsert(seedProducts.map(toProductRow), { onConflict: "id" });
+      throwIfSupabaseError(seedProductsError, "Impossible d'initialiser les produits");
+    }
+
+    hasCheckedInitialSeed = true;
+  })().finally(() => {
+    initialSeedPromise = null;
+  });
+
+  await initialSeedPromise;
+}
+
 function mapOrderRow(row: OrderRow): Order {
   return {
     id: row.id,
@@ -148,6 +202,7 @@ function mapOrderRow(row: OrderRow): Order {
 
 export async function getCategories(): Promise<Category[]> {
   const supabase = getSupabaseClient();
+  await ensureInitialCatalogSeed(supabase);
 
   const { data, error } = await supabase
     .from("categories")
@@ -160,6 +215,7 @@ export async function getCategories(): Promise<Category[]> {
 
 export async function getCategoryById(categoryId: string): Promise<Category | null> {
   const supabase = getSupabaseClient();
+  await ensureInitialCatalogSeed(supabase);
 
   const { data, error } = await supabase
     .from("categories")
@@ -203,6 +259,7 @@ export async function removeCategory(categoryId: string): Promise<void> {
 
 export async function getProducts(): Promise<Product[]> {
   const supabase = getSupabaseClient();
+  await ensureInitialCatalogSeed(supabase);
 
   const { data, error } = await supabase
     .from("products")
@@ -217,6 +274,7 @@ export async function getProducts(): Promise<Product[]> {
 
 export async function getActiveProducts(): Promise<Product[]> {
   const supabase = getSupabaseClient();
+  await ensureInitialCatalogSeed(supabase);
 
   const { data, error } = await supabase
     .from("products")
@@ -232,6 +290,7 @@ export async function getActiveProducts(): Promise<Product[]> {
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   const supabase = getSupabaseClient();
+  await ensureInitialCatalogSeed(supabase);
 
   const { data, error } = await supabase
     .from("products")
@@ -247,6 +306,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 
 export async function getProductById(productId: string): Promise<Product | null> {
   const supabase = getSupabaseClient();
+  await ensureInitialCatalogSeed(supabase);
 
   const { data, error } = await supabase
     .from("products")
