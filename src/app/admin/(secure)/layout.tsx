@@ -11,7 +11,7 @@ export default async function SecureAdminLayout({ children }: { children: React.
     redirect("/admin/login");
   }
 
-  const backendLabel = isSupabaseConfigured() ? "Supabase" : "JSON local";
+  const backendLabel = isSupabaseConfigured() ? "Supabase" : "Supabase non configure";
   const environmentLabel = process.env.VERCEL ? "Vercel" : "Local";
   const domain = process.env.VERCEL_URL;
 

@@ -84,7 +84,7 @@ export default async function AdminDashboardPage() {
           <h2 className="mt-1 font-display text-3xl font-black text-ink-950">Configuration</h2>
           <div className="mt-4 space-y-2">
             <p className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-ink-800">
-              Backend: {supabaseReady ? "Supabase actif" : "JSON local actif"}
+              Backend: {supabaseReady ? "Supabase actif" : "Supabase non configure"}
             </p>
             <p className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-ink-800">
               Environnement: {environment}

@@ -9,8 +9,7 @@ Boutique de sport en ligne basee au Senegal avec espace admin complet:
 
 - Next.js 15 (App Router)
 - React 19
-- Supabase (optionnel)
-- Fallback local JSON (`data/*.json`) si Supabase n est pas configure
+- Supabase (obligatoire)
 
 ## Lancer le projet
 
@@ -44,10 +43,7 @@ ADMIN_PASSCODE=moncode npm run dev
 
 ## Donnees
 
-Par defaut, les donnees sont stockees ici:
-- `data/categories.json`
-- `data/products.json`
-- `data/orders.json`
+Toutes les donnees passent par Supabase (categories, produits, commandes).
 
 ## Configuration Supabase (simple)
 
@@ -55,18 +51,17 @@ Par defaut, les donnees sont stockees ici:
 2. Ouvrir SQL Editor puis executer le schema: `supabase/schema.sql`.
 3. Executer aussi: `supabase/storage.sql` (bucket public pour images produits).
 4. Copier `.env.example` vers `.env.local` et renseigner:
-   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_URL` (deja pre-remplie avec ton projet)
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `SUPABASE_STORAGE_BUCKET` (optionnel, defaut: `products`)
 5. Redemarrer le serveur Next.js.
 
-Quand ces variables sont configurees, le backend utilise Supabase automatiquement.
+Sans ces variables, le backend et l upload images ne fonctionnent pas.
 
 ## Upload images admin
 
 - Dans `/admin/products`, l admin televerse directement les images (plus besoin d URL manuelle).
-- En local sans Supabase: upload sauvegarde dans `public/uploads/products/`.
-- Sur Vercel: active Supabase (variables + bucket) pour que les uploads soient persistants.
+- Les images sont enregistrees dans Supabase Storage (bucket `products`).
 
 ## Photos produits
 

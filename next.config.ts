@@ -1,11 +1,11 @@
 import type { NextConfig } from "next";
 
+const DEFAULT_SUPABASE_URL = "https://xjmfycgzqsgnddlhhcoh.supabase.co";
+
 let supabaseStorageHostname: string | null = null;
 try {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  if (url) {
-    supabaseStorageHostname = new URL(url).hostname;
-  }
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+  supabaseStorageHostname = new URL(url).hostname;
 } catch {
   supabaseStorageHostname = null;
 }

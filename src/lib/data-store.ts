@@ -3,8 +3,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import * as jsonStore from "@/lib/data-store-json";
-import { createSupabaseServerClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type {
   Category,
   CheckoutInput,
@@ -59,10 +58,7 @@ type OrderRow = {
   order_items?: OrderItemRow[] | null;
 };
 
-function getSupabaseClientOrNull(): SupabaseClient | null {
-  if (!isSupabaseConfigured()) {
-    return null;
-  }
+function getSupabaseClient(): SupabaseClient {
   return createSupabaseServerClient();
 }
 
@@ -151,10 +147,7 @@ function mapOrderRow(row: OrderRow): Order {
 }
 
 export async function getCategories(): Promise<Category[]> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    return jsonStore.getCategories();
-  }
+  const supabase = getSupabaseClient();
 
   const { data, error } = await supabase
     .from("categories")
@@ -166,10 +159,7 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function getCategoryById(categoryId: string): Promise<Category | null> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    return jsonStore.getCategoryById(categoryId);
-  }
+  const supabase = getSupabaseClient();
 
   const { data, error } = await supabase
     .from("categories")
@@ -182,10 +172,7 @@ export async function getCategoryById(categoryId: string): Promise<Category | nu
 }
 
 export async function saveCategory(category: Category): Promise<Category> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    return jsonStore.saveCategory(category);
-  }
+  const supabase = getSupabaseClient();
 
   const { data, error } = await supabase
     .from("categories")
@@ -198,11 +185,7 @@ export async function saveCategory(category: Category): Promise<Category> {
 }
 
 export async function removeCategory(categoryId: string): Promise<void> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    await jsonStore.removeCategory(categoryId);
-    return;
-  }
+  const supabase = getSupabaseClient();
 
   const { count, error: countError } = await supabase
     .from("products")
@@ -219,10 +202,7 @@ export async function removeCategory(categoryId: string): Promise<void> {
 }
 
 export async function getProducts(): Promise<Product[]> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    return jsonStore.getProducts();
-  }
+  const supabase = getSupabaseClient();
 
   const { data, error } = await supabase
     .from("products")
@@ -236,10 +216,7 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 export async function getActiveProducts(): Promise<Product[]> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    return jsonStore.getActiveProducts();
-  }
+  const supabase = getSupabaseClient();
 
   const { data, error } = await supabase
     .from("products")
@@ -254,10 +231,7 @@ export async function getActiveProducts(): Promise<Product[]> {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    return jsonStore.getProductBySlug(slug);
-  }
+  const supabase = getSupabaseClient();
 
   const { data, error } = await supabase
     .from("products")
@@ -272,10 +246,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 }
 
 export async function getProductById(productId: string): Promise<Product | null> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    return jsonStore.getProductById(productId);
-  }
+  const supabase = getSupabaseClient();
 
   const { data, error } = await supabase
     .from("products")
@@ -290,10 +261,7 @@ export async function getProductById(productId: string): Promise<Product | null>
 }
 
 export async function saveProduct(product: Product): Promise<Product> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    return jsonStore.saveProduct(product);
-  }
+  const supabase = getSupabaseClient();
 
   const { data, error } = await supabase
     .from("products")
@@ -308,21 +276,14 @@ export async function saveProduct(product: Product): Promise<Product> {
 }
 
 export async function removeProduct(productId: string): Promise<void> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    await jsonStore.removeProduct(productId);
-    return;
-  }
+  const supabase = getSupabaseClient();
 
   const { error } = await supabase.from("products").delete().eq("id", productId);
   throwIfSupabaseError(error, "Impossible de supprimer le produit");
 }
 
 export async function getOrders(): Promise<Order[]> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    return jsonStore.getOrders();
-  }
+  const supabase = getSupabaseClient();
 
   const { data, error } = await supabase
     .from("orders")
@@ -336,10 +297,7 @@ export async function getOrders(): Promise<Order[]> {
 }
 
 export async function getOrderById(orderId: string): Promise<Order | null> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    return jsonStore.getOrderById(orderId);
-  }
+  const supabase = getSupabaseClient();
 
   const { data, error } = await supabase
     .from("orders")
@@ -354,32 +312,21 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
 }
 
 export async function removeOrder(orderId: string): Promise<void> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    await jsonStore.removeOrder(orderId);
-    return;
-  }
+  const supabase = getSupabaseClient();
 
   const { error } = await supabase.from("orders").delete().eq("id", orderId);
   throwIfSupabaseError(error, "Impossible de supprimer la commande");
 }
 
 export async function updateOrderStatus(orderId: string, status: OrderStatus): Promise<void> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    await jsonStore.updateOrderStatus(orderId, status);
-    return;
-  }
+  const supabase = getSupabaseClient();
 
   const { error } = await supabase.from("orders").update({ status }).eq("id", orderId);
   throwIfSupabaseError(error, "Impossible de mettre a jour la commande");
 }
 
 export async function createOrder(input: CheckoutInput): Promise<Order> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    return jsonStore.createOrder(input);
-  }
+  const supabase = getSupabaseClient();
 
   const requestedLines = input.lines.filter((line) => line.quantity > 0);
   if (requestedLines.length === 0) {
@@ -499,11 +446,6 @@ export async function createOrder(input: CheckoutInput): Promise<Order> {
 }
 
 export async function getDashboardStats(): Promise<DashboardStats> {
-  const supabase = getSupabaseClientOrNull();
-  if (!supabase) {
-    return jsonStore.getDashboardStats();
-  }
-
   const [products, orders] = await Promise.all([getProducts(), getOrders()]);
   const activeProducts = products.filter((product) => product.isActive).length;
   const outOfStockProducts = products.filter((product) => product.stock <= 0).length;

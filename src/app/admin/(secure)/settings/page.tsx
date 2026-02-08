@@ -1,5 +1,7 @@
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 
+const DEFAULT_SUPABASE_URL = "https://xjmfycgzqsgnddlhhcoh.supabase.co";
+
 function statusBadge(ok: boolean) {
   return ok
     ? "inline-flex rounded-full border border-lime-300 bg-lime-100 px-2.5 py-1 text-xs font-black uppercase tracking-[0.12em] text-lime-900"
@@ -8,7 +10,8 @@ function statusBadge(ok: boolean) {
 
 export default function AdminSettingsPage() {
   const supabaseReady = isSupabaseConfigured();
-  const supabaseUrlReady = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+  const supabaseUrlReady = Boolean(supabaseUrl);
   const supabaseKeyReady = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
   const hasAdminPasscode = Boolean(process.env.ADMIN_PASSCODE);
   const storageBucket = process.env.SUPABASE_STORAGE_BUCKET || "products";
@@ -57,7 +60,9 @@ export default function AdminSettingsPage() {
           <div className="mt-4 space-y-3">
             <div className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
               <span className="text-sm font-bold text-ink-900">NEXT_PUBLIC_SUPABASE_URL</span>
-              <span className={statusBadge(supabaseUrlReady)}>{supabaseUrlReady ? "OK" : "Manquant"}</span>
+              <span className={statusBadge(supabaseUrlReady)}>
+                {supabaseUrlReady ? "OK" : "Manquant"}
+              </span>
             </div>
 
             <div className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">

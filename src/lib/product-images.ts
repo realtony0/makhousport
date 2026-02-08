@@ -1,13 +1,10 @@
 import "server-only";
 
 import { randomUUID } from "node:crypto";
-import { promises as fs } from "node:fs";
-import path from "node:path";
 
 import { createSupabaseServerClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 const ALLOWED_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp", "avif"]);
-const LOCAL_UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "products");
 
 function sanitizeFileName(rawName: string): string {
   const base = rawName
@@ -44,28 +41,6 @@ function getFilesFromFormData(formData: FormData, fieldName: string): File[] {
   return formData
     .getAll(fieldName)
     .filter((entry): entry is File => entry instanceof File && entry.size > 0);
-}
-
-async function uploadToLocal(files: File[]): Promise<string[]> {
-  if (process.env.VERCEL) {
-    throw new Error("Sur Vercel, active Supabase pour televerser les images");
-  }
-
-  await fs.mkdir(LOCAL_UPLOAD_DIR, { recursive: true });
-  const paths: string[] = [];
-
-  for (const file of files) {
-    const extension = getExtension(file.name, file.type);
-    const safeName = sanitizeFileName(file.name.replace(/\.[^.]+$/, ""));
-    const finalName = `${Date.now()}-${randomUUID().slice(0, 8)}-${safeName}.${extension}`;
-    const finalPath = path.join(LOCAL_UPLOAD_DIR, finalName);
-
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await fs.writeFile(finalPath, buffer);
-    paths.push(`/uploads/products/${finalName}`);
-  }
-
-  return paths;
 }
 
 async function uploadToSupabase(files: File[]): Promise<string[]> {
@@ -105,9 +80,11 @@ export async function uploadProductImages(formData: FormData, fieldName: string)
     return [];
   }
 
-  if (isSupabaseConfigured()) {
-    return uploadToSupabase(files);
+  if (!isSupabaseConfigured()) {
+    throw new Error(
+      "Supabase non configure: upload image indisponible. Configure NEXT_PUBLIC_SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY."
+    );
   }
 
-  return uploadToLocal(files);
+  return uploadToSupabase(files);
 }
