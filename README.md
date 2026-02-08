@@ -51,12 +51,13 @@ Si la base est vide au premier lancement, le catalogue initial est injecte autom
 1. Creer un projet Supabase.
 2. Ouvrir SQL Editor puis executer le schema: `supabase/schema.sql`.
 3. Executer aussi: `supabase/storage.sql` (bucket public pour images produits).
-4. Copier `.env.example` vers `.env.local` et renseigner:
+4. Si la boutique est vide, executer `supabase/seed.sql` pour injecter les categories et produits.
+5. Copier `.env.example` vers `.env.local` et renseigner:
    - `NEXT_PUBLIC_SUPABASE_URL` (deja pre-remplie avec ton projet)
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `SUPABASE_STORAGE_BUCKET` (optionnel, defaut: `products`)
    - `WHATSAPP_ORDER_NUMBER` (numero destination des commandes, ex: `221770000000`)
-5. Redemarrer le serveur Next.js.
+6. Redemarrer le serveur Next.js.
 
 Sans ces variables, le backend et l upload images ne fonctionnent pas.
 
