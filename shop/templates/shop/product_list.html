@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if category %}{{ category.name }} — {% endif %}Boutique — {{ site_name }}
+{% endblock %}
+
+{% block content %}
+  <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <div>
+      <h1 class="text-2xl font-extrabold tracking-tight">
+        {% if category %}
+          {{ category.name }}
+        {% else %}
+          Boutique
+        {% endif %}
+      </h1>
+      <p class="mt-1 text-sm text-slate-600">Découvrez nos articles et équipements.</p>
+    </div>
+
+    <form method="get" class="grid w-full gap-3 md:max-w-xl md:grid-cols-3">
+      <input
+        name="q"
+        value="{{ q }}"
+        placeholder="Rechercher…"
+        class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm outline-none ring-slate-200 focus:ring md:col-span-2"
+      />
+      <select
+        name="tri"
+        class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-slate-200 focus:ring"
+      >
+        <option value="recent" {% if tri == "recent" %}selected{% endif %}>Plus récents</option>
+        <option value="prix_asc" {% if tri == "prix_asc" %}selected{% endif %}>Prix (↑)</option>
+        <option value="prix_desc" {% if tri == "prix_desc" %}selected{% endif %}>Prix (↓)</option>
+        <option value="nom" {% if tri == "nom" %}selected{% endif %}>Nom (A–Z)</option>
+      </select>
+      {% if category %}
+        <input type="hidden" name="categorie" value="{{ category.slug }}" />
+      {% endif %}
+      <button
+        type="submit"
+        class="md:col-span-3 rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+      >
+        Filtrer
+      </button>
+    </form>
+  </div>
+
+  {% if page_obj.object_list %}
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {% for product in page_obj.object_list %}
+        {% include "shop/_product_card.html" with product=product %}
+      {% endfor %}
+    </div>
+
+    <div class="mt-8 flex items-center justify-between gap-4">
+      <div class="text-sm text-slate-600">Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}</div>
+      <div class="flex gap-2">
+        {% if page_obj.has_previous %}
+          <a
+            href="?q={{ q|urlencode }}&tri={{ tri }}&page={{ page_obj.previous_page_number }}"
+            class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm hover:bg-slate-50"
+          >
+            Précédent
+          </a>
+        {% endif %}
+        {% if page_obj.has_next %}
+          <a
+            href="?q={{ q|urlencode }}&tri={{ tri }}&page={{ page_obj.next_page_number }}"
+            class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm hover:bg-slate-50"
+          >
+            Suivant
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  {% else %}
+    <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-600">
+      Aucun produit trouvé.
+    </div>
+  {% endif %}
+{% endblock %}
+

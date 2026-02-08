@@ -1,0 +1,39 @@
+{% load shop_filters %}
+
+<a
+  href="{% url 'shop:product_detail' slug=product.slug %}"
+  class="group block overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow"
+>
+  <div class="aspect-square bg-slate-100">
+    {% with img=product.main_image %}
+      {% if img %}
+        <img
+          src="{{ img.image.url }}"
+          alt="{{ img.alt_text|default:product.name }}"
+          class="h-full w-full object-cover transition group-hover:scale-[1.02]"
+          loading="lazy"
+        />
+      {% else %}
+        <div class="flex h-full w-full items-center justify-center text-sm text-slate-500">Image indisponible</div>
+      {% endif %}
+    {% endwith %}
+  </div>
+  <div class="p-4">
+    <div class="text-sm text-slate-500">{{ product.category.name }}</div>
+    <div class="mt-1 line-clamp-2 font-semibold">{{ product.name }}</div>
+    <div class="mt-2 flex items-baseline gap-2">
+      <div class="text-lg font-bold">{{ product.price_xof|xof }}</div>
+      {% if product.compare_at_price_xof %}
+        <div class="text-sm text-slate-500 line-through">{{ product.compare_at_price_xof|xof }}</div>
+      {% endif %}
+    </div>
+    <div class="mt-2 text-xs text-slate-500">
+      {% if product.stock > 0 %}
+        En stock ({{ product.stock }})
+      {% else %}
+        Rupture de stock
+      {% endif %}
+    </div>
+  </div>
+</a>
+

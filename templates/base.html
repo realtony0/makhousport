@@ -1,0 +1,120 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}{{ site_name }}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-900">
+    <header class="border-b bg-white">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
+        <a href="{% url 'shop:home' %}" class="text-xl font-extrabold tracking-tight">
+          {{ site_name }}
+        </a>
+
+        <form action="{% url 'shop:product_list' %}" method="get" class="hidden w-full max-w-md md:block">
+          <label class="sr-only" for="q">Rechercher</label>
+          <input
+            id="q"
+            name="q"
+            value="{{ request.GET.q }}"
+            placeholder="Rechercher un article…"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 outline-none ring-slate-200 focus:ring"
+          />
+        </form>
+
+        <nav class="flex items-center gap-3">
+          <a
+            href="{% url 'shop:product_list' %}"
+            class="rounded-lg px-3 py-2 text-sm font-medium hover:bg-slate-100"
+          >
+            Boutique
+          </a>
+          <a
+            href="{% url 'shop:cart_detail' %}"
+            class="rounded-lg px-3 py-2 text-sm font-medium hover:bg-slate-100"
+          >
+            Panier
+            {% if cart_count %}
+              <span class="ml-1 rounded-full bg-slate-900 px-2 py-0.5 text-xs text-white">{{ cart_count }}</span>
+            {% endif %}
+          </a>
+          {% if request.user.is_staff %}
+            <a href="/admin/" class="rounded-lg px-3 py-2 text-sm font-medium hover:bg-slate-100">Admin</a>
+          {% endif %}
+        </nav>
+      </div>
+
+      {% if nav_categories %}
+        <div class="border-t bg-white">
+          <div class="mx-auto max-w-6xl overflow-x-auto px-4">
+            <div class="flex gap-2 py-3">
+              {% for c in nav_categories %}
+                <a
+                  href="{% url 'shop:product_list_by_category' category_slug=c.slug %}"
+                  class="whitespace-nowrap rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm hover:bg-slate-50"
+                >
+                  {{ c.name }}
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </header>
+
+    <main class="mx-auto w-full max-w-6xl px-4 py-8">
+      {% if messages %}
+        <div class="mb-6 space-y-2">
+          {% for message in messages %}
+            <div
+              class="rounded-xl border px-4 py-3 text-sm
+              {% if message.tags == 'success' %}border-emerald-200 bg-emerald-50 text-emerald-900{% endif %}
+              {% if message.tags == 'error' %}border-rose-200 bg-rose-50 text-rose-900{% endif %}
+              {% if message.tags == 'warning' %}border-amber-200 bg-amber-50 text-amber-900{% endif %}
+              {% if message.tags == 'info' %}border-sky-200 bg-sky-50 text-sky-900{% endif %}
+              "
+            >
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="border-t bg-white">
+      <div class="mx-auto grid max-w-6xl gap-4 px-4 py-8 md:grid-cols-3">
+        <div>
+          <div class="text-lg font-bold">{{ site_name }}</div>
+          <p class="mt-2 text-sm text-slate-600">
+            Boutique de sport en ligne basée au Sénégal. Commandez facilement et recevez votre équipement partout au pays.
+          </p>
+        </div>
+        <div class="text-sm text-slate-600">
+          <div class="font-semibold text-slate-900">Paiement</div>
+          <ul class="mt-2 space-y-1">
+            <li>Paiement à la livraison</li>
+            <li>Orange Money</li>
+            <li>Wave</li>
+          </ul>
+        </div>
+        <div class="text-sm text-slate-600">
+          <div class="font-semibold text-slate-900">Contact</div>
+          <ul class="mt-2 space-y-1">
+            <li>Dakar, Sénégal</li>
+            <li>Tél: +221 XX XXX XX XX</li>
+            <li>Email: contact@makhousport.sn</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t py-4 text-center text-xs text-slate-500">
+        © {{ site_name }} — Tous droits réservés
+      </div>
+    </footer>
+  </body>
+</html>
+

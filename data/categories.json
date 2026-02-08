@@ -1,0 +1,20 @@
+[
+  {
+    "id": "cat-socks",
+    "name": "Chaussettes",
+    "slug": "chaussettes",
+    "description": "Chaussettes de sport confortables pour entrainement et match."
+  },
+  {
+    "id": "cat-compression",
+    "name": "Vetements de compression",
+    "slug": "vetements-compression",
+    "description": "Shorts et tenues de compression pour performance."
+  },
+  {
+    "id": "cat-protection",
+    "name": "Protection et maintien",
+    "slug": "protection-maintien",
+    "description": "Chevillieres, sangles rotuliennes et manchons de protection."
+  }
+]

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load shop_filters %}
+
+{% block title %}{{ site_name }} — Boutique de sport au Sénégal{% endblock %}
+
+{% block content %}
+  <section class="rounded-3xl bg-gradient-to-br from-slate-900 to-slate-700 px-6 py-10 text-white md:px-10">
+    <div class="max-w-3xl">
+      <h1 class="text-3xl font-extrabold tracking-tight md:text-4xl">Équipe-toi. Performes. Répète.</h1>
+      <p class="mt-3 text-white/80">
+        Bienvenue sur {{ site_name }}, ta boutique de sport en ligne basée au Sénégal. Livraison rapide, produits
+        sélectionnés et paiement flexible.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a
+          href="{% url 'shop:product_list' %}"
+          class="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100"
+        >
+          Voir la boutique
+        </a>
+        <a
+          href="/admin/"
+          class="rounded-xl border border-white/25 bg-white/10 px-5 py-3 text-sm font-semibold hover:bg-white/15"
+        >
+          Espace admin
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {% if categories %}
+    <section class="mt-10">
+      <div class="flex items-end justify-between gap-4">
+        <h2 class="text-xl font-bold">Catégories</h2>
+        <a href="{% url 'shop:product_list' %}" class="text-sm font-semibold text-slate-700 hover:underline">
+          Tout voir
+        </a>
+      </div>
+      <div class="mt-4 grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+        {% for c in categories %}
+          <a
+            href="{% url 'shop:product_list_by_category' category_slug=c.slug %}"
+            class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow"
+          >
+            <div class="text-sm text-slate-500">Catégorie</div>
+            <div class="mt-1 font-semibold">{{ c.name }}</div>
+            {% if c.description %}
+              <div class="mt-2 line-clamp-2 text-sm text-slate-600">{{ c.description }}</div>
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <section class="mt-10">
+    <div class="flex items-end justify-between gap-4">
+      <h2 class="text-xl font-bold">Produits en vedette</h2>
+      <a href="{% url 'shop:product_list' %}" class="text-sm font-semibold text-slate-700 hover:underline">
+        Voir plus
+      </a>
+    </div>
+    {% if featured_products %}
+      <div class="mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {% for product in featured_products %}
+          {% include "shop/_product_card.html" with product=product %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="mt-4 rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-600">
+        Aucun produit pour le moment. Ajoutez des produits via l'espace admin.
+      </div>
+    {% endif %}
+  </section>
+
+  <section class="mt-10 grid gap-4 md:grid-cols-3">
+    <div class="rounded-2xl border border-slate-200 bg-white p-6">
+      <div class="text-sm text-slate-500">Livraison</div>
+      <div class="mt-1 font-semibold">Partout au Sénégal</div>
+      <p class="mt-2 text-sm text-slate-600">Dakar, Thiès, Saint-Louis… on s'occupe de toi.</p>
+    </div>
+    <div class="rounded-2xl border border-slate-200 bg-white p-6">
+      <div class="text-sm text-slate-500">Paiement</div>
+      <div class="mt-1 font-semibold">Flexible</div>
+      <p class="mt-2 text-sm text-slate-600">Paiement à la livraison, Orange Money ou Wave.</p>
+    </div>
+    <div class="rounded-2xl border border-slate-200 bg-white p-6">
+      <div class="text-sm text-slate-500">Support</div>
+      <div class="mt-1 font-semibold">Réactif</div>
+      <p class="mt-2 text-sm text-slate-600">On répond rapidement pour t'aider à choisir.</p>
+    </div>
+  </section>
+{% endblock %}
+

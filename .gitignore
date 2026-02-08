@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*.log
+
+.DS_Store
+
+.env
+.env.local
+
+.venv/
+venv/
+node_modules/
+
+db.sqlite3
+staticfiles/
+.next/
+out/
