@@ -8,6 +8,9 @@ function normalizePhoneNumber(raw: string): string | null {
   if (!digits) {
     return null;
   }
+  if (digits.length === 9 && digits.startsWith("7")) {
+    return `221${digits}`;
+  }
   if (digits.startsWith("00")) {
     return digits.slice(2);
   }
