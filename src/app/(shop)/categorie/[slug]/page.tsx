@@ -49,26 +49,31 @@ export default async function CategoryPage({
 
   return (
     <div className="space-y-6">
-      <section className="ms-card p-6 md:p-8">
+      <section className="ms-card p-5 sm:p-6 md:p-8">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="ms-kicker">Categorie</p>
-            <h1 className="mt-2 font-display text-4xl font-black text-slate-950">{category.name}</h1>
+            <h1 className="mt-2 font-display text-3xl font-black text-slate-950 sm:text-4xl">{category.name}</h1>
             {category.description ? (
               <p className="mt-2 max-w-2xl text-sm font-semibold leading-relaxed text-slate-700 md:text-base">
                 {category.description}
               </p>
             ) : null}
           </div>
-          <Link href="/boutique" className="ms-btn-secondary">
+          <Link href="/boutique" className="ms-btn-secondary w-full sm:w-auto">
             Toute la boutique
           </Link>
         </div>
       </section>
 
       <section className="ms-card p-5">
-        <form method="get" className="grid gap-3 md:grid-cols-4">
-          <input name="q" defaultValue={q} placeholder="Rechercher dans cette categorie" className="ms-input md:col-span-2" />
+        <form method="get" className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+          <input
+            name="q"
+            defaultValue={q}
+            placeholder="Rechercher dans cette categorie"
+            className="ms-input sm:col-span-2 md:col-span-2"
+          />
 
           <select name="tri" defaultValue={tri} className="ms-select">
             <option value="recent">Par defaut</option>
@@ -77,7 +82,7 @@ export default async function CategoryPage({
             <option value="nom">Nom A-Z</option>
           </select>
 
-          <button type="submit" className="ms-btn-primary">
+          <button type="submit" className="ms-btn-primary w-full sm:w-auto">
             Filtrer
           </button>
         </form>

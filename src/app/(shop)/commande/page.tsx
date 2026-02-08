@@ -34,14 +34,14 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
 
   return (
     <div className="space-y-6">
-      <section className="ms-card p-6 md:p-8">
+      <section className="ms-card p-5 sm:p-6 md:p-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="ms-kicker">Validation commande</p>
-            <h1 className="mt-2 font-display text-4xl font-black text-slate-950 md:text-5xl">Passer commande</h1>
+            <h1 className="mt-2 font-display text-3xl font-black text-slate-950 sm:text-4xl md:text-5xl">Passer commande</h1>
             <p className="mt-2 text-sm font-semibold text-slate-700">Renseignez vos informations puis validez.</p>
           </div>
-          <Link href="/panier" className="ms-btn-secondary">
+          <Link href="/panier" className="ms-btn-secondary w-full sm:w-auto">
             Retour panier
           </Link>
         </div>
@@ -51,9 +51,9 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
         <div className="rounded-2xl border border-rose-300 bg-rose-100 px-4 py-3 text-sm font-bold text-rose-900">{error}</div>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <form action="/api/checkout" method="post" className="ms-card p-5 md:p-6 lg:col-span-2">
-          <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+        <form action="/api/checkout" method="post" className="ms-card p-5 md:p-6">
+          <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="ms-label" htmlFor="customerName">
                 Nom complet
@@ -68,14 +68,14 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
               <input id="customerPhone" name="customerPhone" required className="ms-input" />
             </div>
 
-            <div className="md:col-span-2">
+            <div className="sm:col-span-2">
               <label className="ms-label" htmlFor="customerEmail">
                 Email (optionnel)
               </label>
               <input id="customerEmail" name="customerEmail" type="email" className="ms-input" />
             </div>
 
-            <div className="md:col-span-2">
+            <div className="sm:col-span-2">
               <label className="ms-label" htmlFor="address">
                 Adresse
               </label>
@@ -100,7 +100,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
               </select>
             </div>
 
-            <div className="md:col-span-2">
+            <div className="sm:col-span-2">
               <label className="ms-label" htmlFor="notes">
                 Notes (optionnel)
               </label>
@@ -113,7 +113,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
           </button>
         </form>
 
-        <aside className="ms-card-subtle p-5 md:p-6">
+        <aside className="ms-card-subtle p-5 md:p-6 lg:sticky lg:top-24 lg:h-fit">
           <p className="ms-kicker">Resume</p>
           <p className="mt-2 font-display text-4xl font-black text-slate-950">{formatXof(totalXof)}</p>
 

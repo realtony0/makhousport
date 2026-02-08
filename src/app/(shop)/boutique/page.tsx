@@ -33,33 +33,33 @@ export default async function BoutiquePage({ searchParams }: { searchParams: Pro
 
   return (
     <div className="space-y-6">
-      <section className="ms-card p-6 md:p-8">
+      <section className="ms-card p-5 sm:p-6 md:p-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="ms-kicker">Catalogue complet</p>
-            <h1 className="mt-2 font-display text-4xl font-black text-slate-950 md:text-5xl">Boutique</h1>
+            <h1 className="mt-2 font-display text-3xl font-black text-slate-950 sm:text-4xl md:text-5xl">Boutique</h1>
             <p className="mt-2 max-w-2xl text-sm font-semibold text-slate-700 md:text-base">
               Tous nos produits de sport: performance, maintien et confort pour vos entrainements.
             </p>
           </div>
-          <Link href="/" className="ms-btn-secondary">
+          <Link href="/" className="ms-btn-secondary w-full sm:w-auto">
             Retour accueil
           </Link>
         </div>
       </section>
 
       <section className="ms-card p-5">
-        <form method="get" className="grid gap-3 md:grid-cols-4">
-          <input name="q" defaultValue={q} placeholder="Rechercher un produit" className="ms-input md:col-span-2" />
+        <form method="get" className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+          <input name="q" defaultValue={q} placeholder="Rechercher un produit" className="ms-input sm:col-span-2 md:col-span-2" />
 
-          <select name="tri" defaultValue={tri} className="ms-select">
+          <select name="tri" defaultValue={tri} className="ms-select sm:col-span-1">
             <option value="recent">Par defaut</option>
             <option value="prix_asc">Prix croissant</option>
             <option value="prix_desc">Prix decroissant</option>
             <option value="nom">Nom A-Z</option>
           </select>
 
-          <button type="submit" className="ms-btn-primary">
+          <button type="submit" className="ms-btn-primary w-full sm:w-auto">
             Filtrer
           </button>
         </form>

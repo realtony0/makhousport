@@ -8,7 +8,7 @@ export function ProductCard({ product }: { product: ProductWithCategory }) {
   return (
     <Link
       href={`/boutique/${product.slug}`}
-      className="group overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-soft transition hover:-translate-y-1 hover:shadow-lift"
+      className="group overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-soft transition hover:-translate-y-1 hover:shadow-lift sm:rounded-3xl"
     >
       <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-slate-100 via-white to-orange-100/70">
         {product.mainImage ? (
@@ -24,22 +24,22 @@ export function ProductCard({ product }: { product: ProductWithCategory }) {
           <div className="flex h-full w-full items-center justify-center text-sm font-bold text-slate-500">Image indisponible</div>
         )}
 
-        <div className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-[11px] font-black uppercase tracking-[0.1em] text-slate-700">
+        <div className="absolute left-2.5 top-2.5 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.08em] text-slate-700 sm:left-3 sm:top-3 sm:px-3 sm:text-[11px]">
           {product.category?.name ?? "Article"}
         </div>
       </div>
 
-      <div className="p-4">
-        <h3 className="line-clamp-2 font-display text-lg font-black text-slate-950">{product.name}</h3>
+      <div className="p-3 sm:p-4">
+        <h3 className="line-clamp-2 font-display text-sm font-black text-slate-950 sm:text-lg">{product.name}</h3>
 
         <div className="mt-3 flex items-end justify-between gap-3">
           <div>
-            <p className="text-lg font-black text-slate-950">{formatXof(product.priceXof)}</p>
+            <p className="text-base font-black text-slate-950 sm:text-lg">{formatXof(product.priceXof)}</p>
             {product.compareAtPriceXof ? (
               <p className="text-xs font-bold text-slate-500 line-through">{formatXof(product.compareAtPriceXof)}</p>
             ) : null}
           </div>
-          <p className="text-xs font-black uppercase tracking-[0.1em] text-slate-600">
+          <p className="text-[10px] font-black uppercase tracking-[0.08em] text-slate-600 sm:text-xs sm:tracking-[0.1em]">
             {product.stock > 0 ? `${product.stock} stock` : "rupture"}
           </p>
         </div>

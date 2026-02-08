@@ -21,15 +21,15 @@ export default async function HomePage() {
   }));
 
   return (
-    <div className="space-y-10">
-      <section className="grid gap-5 lg:grid-cols-5">
-        <article className="ms-card-dark relative overflow-hidden p-7 lg:col-span-3 lg:p-10">
+    <div className="space-y-8 md:space-y-10">
+      <section className="grid gap-4 lg:grid-cols-5 lg:gap-5">
+        <article className="ms-card-dark relative overflow-hidden p-5 sm:p-7 lg:col-span-3 lg:p-10">
           <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-orange-400/20 blur-3xl" />
           <div className="absolute -bottom-16 left-10 h-44 w-44 rounded-full bg-cyan-300/20 blur-3xl" />
 
           <div className="relative">
             <p className="ms-kicker text-orange-300">Makhou Sport - Dakar</p>
-            <h1 className="mt-3 max-w-2xl font-display text-4xl font-black uppercase leading-[0.95] text-white md:text-6xl">
+            <h1 className="mt-3 max-w-2xl font-display text-3xl font-black uppercase leading-[0.95] text-white sm:text-4xl md:text-6xl">
               Equipement sportif disponible en stock.
             </h1>
             <p className="mt-5 max-w-xl text-sm font-semibold leading-relaxed text-white/80 md:text-base">
@@ -37,10 +37,13 @@ export default async function HomePage() {
             </p>
 
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/boutique" className="ms-btn-accent">
+              <Link href="/boutique" className="ms-btn-accent w-full sm:w-auto">
                 Voir la boutique
               </Link>
-              <Link href="/categorie/protection-maintien" className="ms-btn-secondary border-white/25 bg-white/10 text-white hover:bg-white/20">
+              <Link
+                href="/categorie/protection-maintien"
+                className="ms-btn-secondary w-full border-white/25 bg-white/10 text-white hover:bg-white/20 sm:w-auto"
+              >
                 Voir protection & maintien
               </Link>
             </div>
@@ -55,7 +58,7 @@ export default async function HomePage() {
 
         <article className="ms-card overflow-hidden p-0 lg:col-span-2">
           {heroProduct?.mainImage ? (
-            <div className="relative h-full min-h-80">
+            <div className="relative h-full min-h-64 sm:min-h-80">
               <Image
                 src={heroProduct.mainImage}
                 alt={heroProduct.name}
@@ -86,12 +89,12 @@ export default async function HomePage() {
             <p className="ms-kicker">Rayons</p>
             <h2 className="mt-1 font-display text-3xl font-black text-slate-950">Par categorie</h2>
           </div>
-          <Link href="/boutique" className="ms-btn-secondary">
+          <Link href="/boutique" className="ms-btn-secondary w-full sm:w-auto">
             Voir tout le catalogue
           </Link>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {categoryStats.map((category, index) => (
             <Link
               key={category.id}

@@ -57,23 +57,23 @@ a {
 
 @layer components {
   .ms-container {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8;
   }
 
   .ms-card {
-    @apply rounded-3xl border border-slate-200/70 bg-white/90 shadow-soft backdrop-blur;
+    @apply rounded-2xl border border-slate-200/70 bg-white/90 shadow-soft backdrop-blur sm:rounded-3xl;
   }
 
   .ms-card-dark {
-    @apply rounded-3xl border border-slate-900/20 bg-gradient-to-br from-ink-950 via-ink-900 to-sky-950 text-white shadow-lift;
+    @apply rounded-2xl border border-slate-900/20 bg-gradient-to-br from-ink-950 via-ink-900 to-sky-950 text-white shadow-lift sm:rounded-3xl;
   }
 
   .ms-card-subtle {
-    @apply rounded-3xl border border-slate-200/70 bg-slate-50/80 shadow-soft;
+    @apply rounded-2xl border border-slate-200/70 bg-slate-50/80 shadow-soft sm:rounded-3xl;
   }
 
   .ms-chip {
-    @apply inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.12em] text-slate-700;
+    @apply inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-slate-700 sm:text-[11px];
   }
 
   .ms-kicker {
@@ -81,11 +81,11 @@ a {
   }
 
   .ms-input {
-    @apply w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100;
+    @apply w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100 min-h-11;
   }
 
   .ms-select {
-    @apply w-full rounded-2xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100;
+    @apply w-full rounded-2xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100 min-h-11;
   }
 
   .ms-textarea {
@@ -97,14 +97,14 @@ a {
   }
 
   .ms-btn-primary {
-    @apply inline-flex items-center justify-center rounded-2xl bg-slate-950 px-5 py-2.5 text-sm font-extrabold text-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift;
+    @apply inline-flex min-h-11 items-center justify-center rounded-2xl bg-slate-950 px-4 py-2.5 text-sm font-extrabold text-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift sm:px-5;
   }
 
   .ms-btn-secondary {
-    @apply inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-900 transition hover:bg-slate-100;
+    @apply inline-flex min-h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-900 transition hover:bg-slate-100 sm:px-5;
   }
 
   .ms-btn-accent {
-    @apply inline-flex items-center justify-center rounded-2xl bg-orange-500 px-5 py-2.5 text-sm font-extrabold text-white shadow-soft transition hover:bg-orange-600;
+    @apply inline-flex min-h-11 items-center justify-center rounded-2xl bg-orange-500 px-4 py-2.5 text-sm font-extrabold text-white shadow-soft transition hover:bg-orange-600 sm:px-5;
   }
 }

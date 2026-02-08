@@ -20,7 +20,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<Pa
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-2 text-xs font-black uppercase tracking-[0.12em] text-slate-500">
+      <div className="flex flex-nowrap items-center gap-2 overflow-x-auto whitespace-nowrap text-xs font-black uppercase tracking-[0.12em] text-slate-500 [scrollbar-width:none]">
         <Link href="/" className="hover:text-slate-900">
           Accueil
         </Link>
@@ -42,14 +42,21 @@ export default async function ProductDetailPage({ params }: { params: Promise<Pa
         <div className="space-y-3">
           <div className="ms-card relative aspect-square overflow-hidden p-0">
             {product.mainImage ? (
-              <Image src={product.mainImage} alt={product.name} fill className="object-cover" sizes="50vw" priority />
+              <Image
+                src={product.mainImage}
+                alt={product.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority
+              />
             ) : (
               <div className="grid h-full place-items-center text-sm font-bold text-slate-500">Image indisponible</div>
             )}
           </div>
 
           {product.images.length > 1 ? (
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-3">
               {product.images.map((src) => (
                 <div key={src} className="ms-card relative aspect-square overflow-hidden p-0">
                   <Image src={src} alt={product.name} fill className="object-cover" sizes="15vw" />
@@ -60,9 +67,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<Pa
         </div>
 
         <div className="space-y-4">
-          <section className="ms-card p-6 md:p-8">
+          <section className="ms-card p-5 sm:p-6 md:p-8">
             <p className="ms-kicker">{product.category?.name ?? "Article"}</p>
-            <h1 className="mt-2 font-display text-4xl font-black text-slate-950">{product.name}</h1>
+            <h1 className="mt-2 font-display text-3xl font-black text-slate-950 sm:text-4xl">{product.name}</h1>
 
             <div className="mt-5 flex items-end gap-3">
               <p className="text-3xl font-black text-slate-950">{formatXof(product.priceXof)}</p>
@@ -90,10 +97,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<Pa
             </ul>
           </section>
 
-          <section className="ms-card p-6">
-            <form action="/api/cart/add" method="post" className="flex flex-wrap items-end gap-3">
+          <section className="ms-card p-5 sm:p-6">
+            <form action="/api/cart/add" method="post" className="grid gap-3 sm:flex sm:flex-wrap sm:items-end">
               <input type="hidden" name="productId" value={product.id} />
-              <div>
+              <div className="w-full sm:w-auto">
                 <label className="ms-label" htmlFor="quantity">
                   Quantite
                 </label>
@@ -104,15 +111,19 @@ export default async function ProductDetailPage({ params }: { params: Promise<Pa
                   min={1}
                   defaultValue={1}
                   disabled={disabled}
-                  className="ms-input w-28 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="ms-input w-full disabled:cursor-not-allowed disabled:opacity-60 sm:w-28"
                 />
               </div>
 
-              <button type="submit" disabled={disabled} className="ms-btn-accent disabled:cursor-not-allowed disabled:opacity-60">
+              <button
+                type="submit"
+                disabled={disabled}
+                className="ms-btn-accent w-full disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+              >
                 Ajouter au panier
               </button>
 
-              <Link href="/panier" className="ms-btn-secondary">
+              <Link href="/panier" className="ms-btn-secondary w-full sm:w-auto">
                 Voir panier
               </Link>
             </form>
