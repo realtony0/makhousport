@@ -5,11 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
-  { href: "/admin", label: "Dashboard" },
+  { href: "/admin", label: "Accueil admin" },
   { href: "/admin/categories", label: "Categories" },
   { href: "/admin/products", label: "Produits" },
   { href: "/admin/orders", label: "Commandes" },
-  { href: "/admin/settings", label: "Configuration" }
+  { href: "/admin/settings", label: "Controle site" }
 ];
 
 function isActive(pathname: string, href: string): boolean {

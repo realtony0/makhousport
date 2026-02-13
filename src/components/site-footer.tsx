@@ -1,7 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export function SiteFooter() {
+import { getSiteSettings } from "@/lib/data-store";
+
+export async function SiteFooter() {
+  const settings = await getSiteSettings();
   const orderContact = process.env.WHATSAPP_ORDER_NUMBER || null;
 
   return (
@@ -46,9 +49,9 @@ export function SiteFooter() {
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">Contact</p>
           <div className="mt-3 space-y-2 text-sm font-semibold text-slate-700">
-            <p>Dakar, Senegal</p>
-            <p>{orderContact ? `Commandes WhatsApp: ${orderContact}` : "Commandes via WhatsApp"}</p>
-            <p>Livraison 24h-72h</p>
+            <p>{settings.footerLocation}</p>
+            <p>{orderContact ? `${settings.footerContactLabel}: ${orderContact}` : settings.footerContactLabel}</p>
+            <p>{settings.footerDeliveryNote}</p>
           </div>
         </div>
       </div>

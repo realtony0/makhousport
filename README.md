@@ -34,6 +34,7 @@ Important:
 Connexion admin par code:
 - variable: `ADMIN_PASSCODE`
 - valeur par defaut: `150803`
+- pages de controle: produits, categories, commandes, reglages site
 
 Exemple:
 

@@ -75,3 +75,15 @@ export type DashboardStats = {
   salesXof: number;
 };
 
+export type SiteSettings = {
+  heroBadge: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  heroPrimaryCtaLabel: string;
+  heroPrimaryCtaHref: string;
+  heroSecondaryCtaLabel: string;
+  heroSecondaryCtaHref: string;
+  footerLocation: string;
+  footerContactLabel: string;
+  footerDeliveryNote: string;
+};

@@ -10,14 +10,17 @@ import {
   getOrderById,
   getProductById,
   getProducts,
+  getSiteSettings,
   removeCategory,
   removeOrder,
   removeProduct,
   saveCategory,
+  saveSiteSettings,
   saveProduct,
   updateOrderStatus
 } from "@/lib/data-store";
 import { uploadProductImages } from "@/lib/product-images";
+import { SITE_SETTINGS_CATEGORY_ID, SITE_SETTINGS_CATEGORY_SLUG } from "@/lib/site-settings";
 import type { Category, OrderStatus, Product } from "@/lib/types";
 import { slugify, toInt } from "@/lib/utils";
 
@@ -64,6 +67,9 @@ async function buildProductFromForm(
   }
   if (!slug) {
     throw new Error("Slug invalide");
+  }
+  if (slug === SITE_SETTINGS_CATEGORY_SLUG) {
+    throw new Error("Slug reserve");
   }
   if (!categoryId || !categories.find((category) => category.id === categoryId)) {
     throw new Error("Categorie invalide");
@@ -254,6 +260,9 @@ export async function deleteCategoryAction(formData: FormData) {
   if (!categoryId) {
     redirect("/admin/categories?error=Categorie%20introuvable");
   }
+  if (categoryId === SITE_SETTINGS_CATEGORY_ID) {
+    redirect("/admin/categories?error=Categorie%20reservee");
+  }
 
   const category = await getCategoryById(categoryId);
   if (!category) {
@@ -271,6 +280,33 @@ export async function deleteCategoryAction(formData: FormData) {
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erreur suppression categorie";
     redirect(`/admin/categories?error=${encodeURIComponent(message)}`);
+  }
+}
+
+export async function updateSiteSettingsAction(formData: FormData) {
+  try {
+    const current = await getSiteSettings();
+    await saveSiteSettings({
+      heroBadge: String(formData.get("heroBadge") || current.heroBadge),
+      heroTitle: String(formData.get("heroTitle") || current.heroTitle),
+      heroSubtitle: String(formData.get("heroSubtitle") || current.heroSubtitle),
+      heroPrimaryCtaLabel: String(formData.get("heroPrimaryCtaLabel") || current.heroPrimaryCtaLabel),
+      heroPrimaryCtaHref: String(formData.get("heroPrimaryCtaHref") || current.heroPrimaryCtaHref),
+      heroSecondaryCtaLabel: String(
+        formData.get("heroSecondaryCtaLabel") || current.heroSecondaryCtaLabel
+      ),
+      heroSecondaryCtaHref: String(formData.get("heroSecondaryCtaHref") || current.heroSecondaryCtaHref),
+      footerLocation: String(formData.get("footerLocation") || current.footerLocation),
+      footerContactLabel: String(formData.get("footerContactLabel") || current.footerContactLabel),
+      footerDeliveryNote: String(formData.get("footerDeliveryNote") || current.footerDeliveryNote)
+    });
+
+    revalidatePath("/", "layout");
+    revalidatePath("/admin/settings");
+    redirect("/admin/settings?ok=site");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Erreur mise a jour";
+    redirect(`/admin/settings?error=${encodeURIComponent(message)}`);
   }
 }
 

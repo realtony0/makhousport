@@ -2,12 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { ProductGrid } from "@/components/product-grid";
+import { getSiteSettings } from "@/lib/data-store";
 import { getAllProductsDetailed, getCategoriesNav, getFeaturedProducts } from "@/lib/shop/queries";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [categories, featured, allProducts] = await Promise.all([
+  const [settings, categories, featured, allProducts] = await Promise.all([
+    getSiteSettings(),
     getCategoriesNav(),
     getFeaturedProducts({ limit: 8 }),
     getAllProductsDetailed()
@@ -28,23 +30,23 @@ export default async function HomePage() {
           <div className="absolute -bottom-16 left-10 h-44 w-44 rounded-full bg-cyan-300/20 blur-3xl" />
 
           <div className="relative">
-            <p className="ms-kicker text-orange-300">Makhou Sport - Dakar</p>
+            <p className="ms-kicker text-orange-300">{settings.heroBadge}</p>
             <h1 className="mt-3 max-w-2xl font-display text-3xl font-black uppercase leading-[0.95] text-white sm:text-4xl md:text-6xl">
-              Equipement sportif disponible en stock.
+              {settings.heroTitle}
             </h1>
             <p className="mt-5 max-w-xl text-sm font-semibold leading-relaxed text-white/80 md:text-base">
-              Chaussettes, maintien articulaire et compression pour match et entrainement.
+              {settings.heroSubtitle}
             </p>
 
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/boutique" className="ms-btn-accent w-full sm:w-auto">
-                Voir la boutique
+              <Link href={settings.heroPrimaryCtaHref} className="ms-btn-accent w-full sm:w-auto">
+                {settings.heroPrimaryCtaLabel}
               </Link>
               <Link
-                href="/categorie/protection-maintien"
+                href={settings.heroSecondaryCtaHref}
                 className="ms-btn-secondary w-full border-white/25 bg-white/10 text-white hover:bg-white/20 sm:w-auto"
               >
-                Voir protection & maintien
+                {settings.heroSecondaryCtaLabel}
               </Link>
             </div>
 

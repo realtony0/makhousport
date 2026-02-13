@@ -4,6 +4,14 @@ import { randomUUID } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { getSeedCategories, getSeedProducts } from "@/lib/seed-catalog";
+import {
+  DEFAULT_SITE_SETTINGS,
+  SITE_SETTINGS_CATEGORY_ID,
+  SITE_SETTINGS_CATEGORY_LEGACY_SLUG,
+  SITE_SETTINGS_CATEGORY_NAME,
+  SITE_SETTINGS_CATEGORY_SLUG,
+  sanitizeSiteSettings
+} from "@/lib/site-settings";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type {
   Category,
@@ -11,7 +19,8 @@ import type {
   DashboardStats,
   Order,
   OrderStatus,
-  Product
+  Product,
+  SiteSettings
 } from "@/lib/types";
 
 type CategoryRow = {
@@ -127,6 +136,26 @@ function toProductRow(product: Product): ProductRow {
   };
 }
 
+function isSiteSettingsRow(row: Pick<CategoryRow, "id" | "slug">): boolean {
+  return (
+    row.id === SITE_SETTINGS_CATEGORY_ID ||
+    row.slug === SITE_SETTINGS_CATEGORY_SLUG ||
+    row.slug === SITE_SETTINGS_CATEGORY_LEGACY_SLUG
+  );
+}
+
+function parseSiteSettings(raw: string | null): SiteSettings {
+  if (!raw) {
+    return DEFAULT_SITE_SETTINGS;
+  }
+  try {
+    const parsed = JSON.parse(raw) as Partial<SiteSettings>;
+    return sanitizeSiteSettings(parsed);
+  } catch {
+    return DEFAULT_SITE_SETTINGS;
+  }
+}
+
 async function ensureInitialCatalogSeed(supabase: SupabaseClient): Promise<void> {
   if (hasCheckedInitialSeed) {
     return;
@@ -142,7 +171,10 @@ async function ensureInitialCatalogSeed(supabase: SupabaseClient): Promise<void>
       .select("id,slug");
     throwIfSupabaseError(categoryRowsError, "Impossible de verifier les categories");
 
-    let categoryRows = (categoryRowsRaw as Array<Pick<CategoryRow, "id" | "slug">> | null) ?? [];
+    let categoryRows =
+      ((categoryRowsRaw as Array<Pick<CategoryRow, "id" | "slug">> | null) ?? []).filter(
+        (row) => !isSiteSettingsRow(row)
+      );
 
     const { count: productCount, error: productCountError } = await supabase
       .from("products")
@@ -167,7 +199,10 @@ async function ensureInitialCatalogSeed(supabase: SupabaseClient): Promise<void>
         .from("categories")
         .select("id,slug");
       throwIfSupabaseError(categoriesAfterSeedError, "Impossible de recharger les categories");
-      categoryRows = (categoriesAfterSeed as Array<Pick<CategoryRow, "id" | "slug">> | null) ?? [];
+      categoryRows =
+        ((categoriesAfterSeed as Array<Pick<CategoryRow, "id" | "slug">> | null) ?? []).filter(
+          (row) => !isSiteSettingsRow(row)
+        );
     }
 
     if ((productCount || 0) === 0 && seedProducts.length > 0) {
@@ -241,7 +276,9 @@ export async function getCategories(): Promise<Category[]> {
     .order("name", { ascending: true });
 
   throwIfSupabaseError(error, "Impossible de charger les categories");
-  return (data as CategoryRow[] | null)?.map(mapCategoryRow) ?? [];
+  return ((data as CategoryRow[] | null) ?? [])
+    .filter((row) => !isSiteSettingsRow(row))
+    .map(mapCategoryRow);
 }
 
 export async function getCategoryById(categoryId: string): Promise<Category | null> {
@@ -255,10 +292,21 @@ export async function getCategoryById(categoryId: string): Promise<Category | nu
     .maybeSingle();
 
   throwIfSupabaseError(error, "Categorie introuvable");
-  return data ? mapCategoryRow(data as CategoryRow) : null;
+  if (!data) {
+    return null;
+  }
+  const row = data as CategoryRow;
+  if (isSiteSettingsRow(row)) {
+    return null;
+  }
+  return mapCategoryRow(row);
 }
 
 export async function saveCategory(category: Category): Promise<Category> {
+  if (isSiteSettingsRow(category)) {
+    throw new Error("Categorie reservee");
+  }
+
   const supabase = getSupabaseClient();
 
   const { data, error } = await supabase
@@ -272,6 +320,10 @@ export async function saveCategory(category: Category): Promise<Category> {
 }
 
 export async function removeCategory(categoryId: string): Promise<void> {
+  if (categoryId === SITE_SETTINGS_CATEGORY_ID) {
+    throw new Error("Categorie reservee");
+  }
+
   const supabase = getSupabaseClient();
 
   const { count, error: countError } = await supabase
@@ -286,6 +338,58 @@ export async function removeCategory(categoryId: string): Promise<void> {
 
   const { error } = await supabase.from("categories").delete().eq("id", categoryId);
   throwIfSupabaseError(error, "Impossible de supprimer la categorie");
+}
+
+export async function getSiteSettings(): Promise<SiteSettings> {
+  const supabase = getSupabaseClient();
+  await ensureInitialCatalogSeed(supabase);
+
+  const { data, error } = await supabase
+    .from("categories")
+    .select("description")
+    .eq("slug", SITE_SETTINGS_CATEGORY_SLUG)
+    .maybeSingle();
+
+  throwIfSupabaseError(error, "Impossible de charger la configuration du site");
+  if (data) {
+    return parseSiteSettings((data as Pick<CategoryRow, "description">).description);
+  }
+
+  const { data: legacyData, error: legacyError } = await supabase
+    .from("categories")
+    .select("description")
+    .eq("slug", SITE_SETTINGS_CATEGORY_LEGACY_SLUG)
+    .maybeSingle();
+
+  throwIfSupabaseError(legacyError, "Impossible de charger la configuration du site");
+  if (!legacyData) {
+    return DEFAULT_SITE_SETTINGS;
+  }
+
+  return parseSiteSettings((legacyData as Pick<CategoryRow, "description">).description);
+}
+
+export async function saveSiteSettings(
+  input: Partial<SiteSettings>
+): Promise<SiteSettings> {
+  const supabase = getSupabaseClient();
+  await ensureInitialCatalogSeed(supabase);
+
+  const current = await getSiteSettings();
+  const next = sanitizeSiteSettings({ ...current, ...input });
+  const payload = {
+    id: SITE_SETTINGS_CATEGORY_ID,
+    name: SITE_SETTINGS_CATEGORY_NAME,
+    slug: SITE_SETTINGS_CATEGORY_SLUG,
+    description: JSON.stringify(next)
+  } satisfies CategoryRow;
+
+  const { error } = await supabase
+    .from("categories")
+    .upsert(payload, { onConflict: "id" });
+
+  throwIfSupabaseError(error, "Impossible d'enregistrer la configuration du site");
+  return next;
 }
 
 export async function getProducts(): Promise<Product[]> {
