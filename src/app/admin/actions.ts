@@ -37,6 +37,21 @@ const orderStatuses: OrderStatus[] = [
   "canceled"
 ];
 
+function isNextRedirectError(error: unknown): boolean {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+  const maybeDigest = (error as { digest?: unknown }).digest;
+  return typeof maybeDigest === "string" && maybeDigest.startsWith("NEXT_REDIRECT");
+}
+
+function getActionErrorMessage(error: unknown, fallback: string): string {
+  if (isNextRedirectError(error)) {
+    throw error;
+  }
+  return error instanceof Error ? error.message : fallback;
+}
+
 function parseExistingImages(raw: FormDataEntryValue | null): string[] {
   if (!raw || typeof raw !== "string") {
     return [];
@@ -155,7 +170,7 @@ export async function createProductAction(formData: FormData) {
     revalidatePath("/admin/products");
     redirect("/admin/products?ok=create");
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Erreur creation produit";
+    const message = getActionErrorMessage(error, "Erreur creation produit");
     redirect(`/admin/products?error=${encodeURIComponent(message)}`);
   }
 }
@@ -192,7 +207,7 @@ export async function updateProductAction(formData: FormData) {
     revalidatePath("/admin/products");
     redirect("/admin/products?ok=update");
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Erreur mise a jour";
+    const message = getActionErrorMessage(error, "Erreur mise a jour");
     redirect(`/admin/products?error=${encodeURIComponent(message)}`);
   }
 }
@@ -227,7 +242,7 @@ export async function createCategoryAction(formData: FormData) {
     revalidatePath("/admin/categories");
     redirect("/admin/categories?ok=create");
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Erreur creation categorie";
+    const message = getActionErrorMessage(error, "Erreur creation categorie");
     redirect(`/admin/categories?error=${encodeURIComponent(message)}`);
   }
 }
@@ -254,7 +269,7 @@ export async function updateCategoryAction(formData: FormData) {
     revalidatePath("/admin/categories");
     redirect("/admin/categories?ok=update");
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Erreur mise a jour categorie";
+    const message = getActionErrorMessage(error, "Erreur mise a jour categorie");
     redirect(`/admin/categories?error=${encodeURIComponent(message)}`);
   }
 }
@@ -282,7 +297,7 @@ export async function deleteCategoryAction(formData: FormData) {
     revalidatePath("/admin/categories");
     redirect("/admin/categories?ok=delete");
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Erreur suppression categorie";
+    const message = getActionErrorMessage(error, "Erreur suppression categorie");
     redirect(`/admin/categories?error=${encodeURIComponent(message)}`);
   }
 }
@@ -309,7 +324,7 @@ export async function updateSiteSettingsAction(formData: FormData) {
     revalidatePath("/admin/settings");
     redirect("/admin/settings?ok=site");
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Erreur mise a jour";
+    const message = getActionErrorMessage(error, "Erreur mise a jour");
     redirect(`/admin/settings?error=${encodeURIComponent(message)}`);
   }
 }
@@ -345,7 +360,7 @@ export async function deleteOrderAction(formData: FormData) {
     revalidatePath(`/commande/${order.id}`);
     redirect("/admin/orders?ok=delete");
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Erreur suppression commande";
+    const message = getActionErrorMessage(error, "Erreur suppression commande");
     redirect(`/admin/orders?error=${encodeURIComponent(message)}`);
   }
 }
