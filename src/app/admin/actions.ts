@@ -20,7 +20,11 @@ import {
   updateOrderStatus
 } from "@/lib/data-store";
 import { uploadProductImages } from "@/lib/product-images";
-import { SITE_SETTINGS_CATEGORY_ID, SITE_SETTINGS_CATEGORY_SLUG } from "@/lib/site-settings";
+import {
+  SITE_SETTINGS_CATEGORY_ID,
+  SITE_SETTINGS_CATEGORY_LEGACY_SLUG,
+  SITE_SETTINGS_CATEGORY_SLUG
+} from "@/lib/site-settings";
 import type { Category, OrderStatus, Product } from "@/lib/types";
 import { slugify, toInt } from "@/lib/utils";
 
@@ -68,9 +72,6 @@ async function buildProductFromForm(
   if (!slug) {
     throw new Error("Slug invalide");
   }
-  if (slug === SITE_SETTINGS_CATEGORY_SLUG) {
-    throw new Error("Slug reserve");
-  }
   if (!categoryId || !categories.find((category) => category.id === categoryId)) {
     throw new Error("Categorie invalide");
   }
@@ -111,6 +112,9 @@ async function buildCategoryFromForm(formData: FormData, currentId?: string): Pr
   }
   if (!slug) {
     throw new Error("Slug invalide");
+  }
+  if (slug === SITE_SETTINGS_CATEGORY_SLUG || slug === SITE_SETTINGS_CATEGORY_LEGACY_SLUG) {
+    throw new Error("Slug reserve");
   }
 
   const slugOwner = categories.find((category) => category.slug === slug && category.id !== currentId);
